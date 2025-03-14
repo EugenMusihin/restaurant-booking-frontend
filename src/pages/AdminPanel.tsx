@@ -26,7 +26,7 @@ export default function AdminPanel() {
             try {
                 const response = await API.get("/admin/booking/list");
                 setBookings(response.data);
-            } catch (err) {
+            } catch {
                 setError("Ошибка загрузки бронирований");
             }
         };
@@ -38,8 +38,17 @@ export default function AdminPanel() {
         try {
             await API.put(`/admin/booking/update-status/${booking_id}`, { booking_status_id: newStatus });
             setBookings((prev) => prev.map((b) => (b.booking_id === booking_id ? { ...b, booking_status_id: newStatus } : b)));
-        } catch (err) {
+        } catch {
             setError("Ошибка обновления статуса");
+        }
+    };
+
+    const deleteBooking = async (booking_id: number) => {
+        try {
+            await API.delete(`/admin/booking/delete/${booking_id}`);
+            setBookings((prev) => prev.filter((b) => b.booking_id !== booking_id));
+        } catch {
+            setError("Ошибка удаления бронирования");
         }
     };
 
@@ -76,6 +85,12 @@ export default function AdminPanel() {
                                     <option key={id} value={id}>{label}</option>
                                 ))}
                             </select>
+                            <button
+                                onClick={() => deleteBooking(booking.booking_id)}
+                                className="ml-2 text-red-500 hover:text-red-700"
+                            >
+                                Удалить
+                            </button>
                         </td>
                     </tr>
                 ))}

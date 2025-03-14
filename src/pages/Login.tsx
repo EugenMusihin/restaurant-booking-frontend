@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserProfile } from "../api";
+import LoginForm from "../components/LoginForm.tsx";
 
 interface User {
     user_id: number;
@@ -22,10 +23,10 @@ export default function UserProfile() {
                 navigate("/login");
             }
         });
-    }, []);
+    }, [navigate]);
 
     if (!user) {
-        return <p>Загрузка...</p>;
+        return <LoginForm />;
     }
 
     return (

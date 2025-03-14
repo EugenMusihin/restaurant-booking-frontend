@@ -60,6 +60,8 @@ const Register = () => {
                 <input type="password" name="confirmPassword" placeholder="Повторите пароль" onChange={handleChange} required />
                 <button type="submit">Зарегистрироваться</button>
             </form>
+            <p>Нет аккаунта? <button onClick={() => navigate("/login")} style={{ color: "blue", textDecoration: "underline" }}>Войти в аккаунт</button></p>
+
         </div>
     );
 };
