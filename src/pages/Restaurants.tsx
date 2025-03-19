@@ -1,29 +1,27 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import L, { LatLngBounds, LatLngExpression } from "leaflet";
+import { LatLngBounds, LatLngExpression } from "leaflet";
 import API from "../api";
 import "leaflet/dist/leaflet.css";
+import {Button, Flex, Typography} from 'antd';
 
-// Интерфейс ресторана
+const { Title, Text} = Typography;
+
 interface Restaurant {
     restaurant_id: number;
     restaurant_name: string;
     restaurant_address: string;
     restaurant_phone: string;
     restaurant_created_date: string;
+    restaurant_open_hours: number;
+    restaurant_open_minutes: number;
+    restaurant_close_hours: number;
+    restaurant_close_minutes: number;
     latitude: number;
     longitude: number;
 }
 
-// 📍 Иконка маркера (Leaflet не загружает стандартные)
-const customIcon = new L.Icon({
-    iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-});
-
-// 📌 Компонент для центрирования карты
 function MapAutoFit({ restaurants }: { restaurants: Restaurant[] }) {
     const map = useMap();
 
@@ -35,6 +33,17 @@ function MapAutoFit({ restaurants }: { restaurants: Restaurant[] }) {
             map.fitBounds(bounds, { padding: [50, 50] });
         }
     }, [restaurants, map]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            const flag = document.querySelector(
+                ".leaflet-control-container .leaflet-bottom.leaflet-right > div > a > svg"
+            );
+            if (flag && flag.parentElement) {
+                flag.parentElement.remove();
+            }
+        }, 100);
+    }, []);
 
     return null;
 }
@@ -55,43 +64,46 @@ export default function Restaurants() {
     }, []);
 
     return (
-        <div className="p-6">
-            <h1 className="text-3xl font-bold mb-4">Список ресторанов</h1>
-            <button
+        <Flex vertical>
+            <Title className="text-3xl font-bold mb-4">Список ресторанов</Title>
+            <Button
                 onClick={() => navigate("/")}
-                className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
+                type={"primary"}
+                size={"large"}
             >
                 Назад на главную
-            </button>
+            </Button>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* 🏠 Список ресторанов */}
-                <div className="space-y-4">
+            <Flex vertical>
+                <Flex vertical>
                     {restaurants.map((restaurant) => (
-                        <div
+                        <Flex vertical
                             key={restaurant.restaurant_id}
                             className="border p-4 rounded-lg shadow-lg"
                         >
-                            <h2 className="text-xl font-semibold">{restaurant.restaurant_name}</h2>
-                            <p className="text-gray-600">{restaurant.restaurant_address}</p>
-                            <p className="text-gray-800 font-medium">{restaurant.restaurant_phone}</p>
-                            <p className="text-gray-500 text-sm">
+                            <Title level={3}>{restaurant.restaurant_name}</Title>
+                            <Text className="text-gray-600">{restaurant.restaurant_address}</Text>
+                            <Text className="text-gray-800 font-medium">{restaurant.restaurant_phone}</Text>
+                            <Text className="text-gray-500 text-sm">
+                                Часы работы: {restaurant.restaurant_open_hours}:{restaurant.restaurant_open_minutes} - {restaurant.restaurant_close_hours}:{restaurant.restaurant_close_minutes}
+                            </Text>
+                            <Text className="text-gray-500 text-sm">
                                 Дата добавления: {new Date(restaurant.restaurant_created_date).toLocaleDateString()}
-                            </p>
-                            <button
+                            </Text>
+                            <Button
                                 onClick={() => navigate(`/restaurant/${restaurant.restaurant_id}/floors`)}
-                                className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg"
+                                type={"dashed"}
+                                size={"large"}
                             >
                                 Выбрать этаж
-                            </button>
-                        </div>
+                            </Button>
+                        </Flex>
                     ))}
-                </div>
+                </Flex>
 
-                {/* 🗺️ Карта с ресторанами */}
-                <div className="border p-4 rounded-lg shadow-lg mb-6">
+                <Flex vertical  >
                     <MapContainer
-                        center={[55.7558, 37.6173]} // Начальный центр (Москва)
+                        center={[55.7558, 37.6173]}
                         zoom={10}
                         style={{ height: "400px", width: "100%" }}
                         ref={mapRef}
@@ -103,18 +115,17 @@ export default function Restaurants() {
                                 <Marker
                                     key={restaurant.restaurant_id}
                                     position={[restaurant.latitude, restaurant.longitude] as LatLngExpression}
-                                    icon={customIcon}
                                 >
                                     <Popup>
                                         <strong>{restaurant.restaurant_name}</strong> <br />
-                                        📍 {restaurant.restaurant_address}
+                                            {restaurant.restaurant_address}
                                     </Popup>
                                 </Marker>
                             ) : null
                         )}
                     </MapContainer>
-                </div>
-            </div>
-        </div>
+                </Flex>
+            </Flex>
+        </Flex>
     );
 }

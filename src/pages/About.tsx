@@ -1,35 +1,34 @@
 import { useNavigate } from "react-router-dom";
+import {Button, Flex, Typography} from 'antd';
 
+const { Title, Text} = Typography;
 export default function About() {
     const navigate = useNavigate();
 
     return (
-        <div className="p-6">
-            <h1 className="text-3xl font-bold mb-4">О нашем сервисе</h1>
-            <p className="text-lg text-gray-700 mb-4">
-                Добро пожаловать в наш сервис бронирования столиков! Мы помогаем вам находить лучшие рестораны, выбирать удобные места и легко бронировать столики онлайн.
-            </p>
+        <Flex vertical>
+            <Title>О нашем сервисе</Title>
+            <Text style={{fontSize: 18}}>
+                Добро пожаловать в сервис бронирования столиков.
+            </Text>
+            <Text style={{fontSize: 18}}>
+                Комфортный отдых начинается с комфортного планирования — бронируйте столики в ресторанах на нашем сайте.
+            </Text>
 
-            <h2 className="text-2xl font-semibold mb-2">Наши возможности</h2>
+            <Title level={3}>Возможности веб-приложения</Title>
             <ul className="list-disc pl-6 text-gray-600 mb-4">
-                <li>Выбор ресторана по вашему вкусу</li>
-                <li>Просмотр доступных этажей и столиков</li>
-                <li>Удобное и быстрое бронирование</li>
+                <li>Выбор ресторана из списка и нахождение их на интерактивной карте</li>
+                <li>Бронирование столика на выбранном этаже любого ресторана</li>
                 <li>Отслеживание своих броней в личном кабинете</li>
             </ul>
 
-            <h2 className="text-2xl font-semibold mb-2">Почему мы?</h2>
-            <p className="text-gray-700 mb-4">
-                Наш сервис позволяет вам экономить время и быть уверенными в том, что ваш столик будет ждать вас в выбранном ресторане.
-                Простота, удобство и надежность – вот наши главные приоритеты!
-            </p>
-
-            <button
+            <Button
                 onClick={() => navigate("/")}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                type={"primary"}
+                size={"large"}
             >
                 Вернуться на главную
-            </button>
-        </div>
+            </Button>
+        </Flex>
     );
 }

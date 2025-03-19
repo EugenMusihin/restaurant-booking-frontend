@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
+import {Button, Flex} from "antd";
+import { Typography } from 'antd';
+
+
+const { Title } = Typography;
 
 interface User {
     user_role_id: number;
@@ -23,50 +28,60 @@ export default function Home() {
         fetchUser();
     }, []);
     return (
-        <div className="p-6 text-center">
-            <h1 className="text-4xl font-bold mb-6">Добро пожаловать в сервис бронирования!</h1>
-            <p className="text-lg text-gray-700 mb-6">
+        <Flex className="p-6 text-center" vertical={true}>
+            <Title>Добро пожаловать в сервис бронирования!</Title>
+            <Title level={4} >
                 Выберите ресторан, этаж и столик для комфортного отдыха.
-            </p>
+            </Title>
 
-            <div className="flex flex-col gap-4 max-w-md mx-auto">
-                {/* Кнопка "Личный кабинет" для всех пользователей */}
-                <button
+            <Flex className="flex flex-col gap-4 max-w-md mx-auto" vertical={true}>
+
+                <Button
                     onClick={() => navigate("/profile")}
-                    className="px-6 py-3 bg-green-500 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-600 transition"
+                    type={"primary"}
+                    size={"large"}
                 >
                     Личный кабинет
-                </button>
-                {/* Для Обычного пользователя (user_role_id === 1) */}
+                </Button>
+
                 {user?.user_role_id === 1 && (
                     <>
-                        <button
+                        <Button
                             onClick={() => navigate("/restaurants")}
-                            className="px-6 py-3 bg-blue-500 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-blue-600 transition"
+                            type={"primary"}
+                            size={"large"}
                         >
                             Список ресторанов
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            onClick={() => navigate("/user_bookings")}
+                            type={"primary"}
+                            size={"large"}
+                        >
+                            Мои бронирования
+                        </Button>
+                        <Button
                             onClick={() => navigate("/about")}
-                            className="px-6 py-3 bg-gray-500 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-gray-600 transition"
+                            type={"primary"}
+                            size={"large"}
                         >
                             О нас
-                        </button>
+                        </Button>
                     </>
                 )}
-                {/* Для Администратора (user_role_id === 2) */}
                 {user?.user_role_id === 2 && (
-                    <button
+                    <Button
                         onClick={() => navigate("/adminpanel")}
-                        className="px-6 py-3 bg-red-500 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-red-600 transition"
+                        type={"primary"}
+                        size={"large"}
                     >
                         Панель администратора
-                    </button>
+                    </Button>
                 )}
 
 
-            </div>
-        </div>
+            </Flex>
+        </Flex>
 
     );
 }

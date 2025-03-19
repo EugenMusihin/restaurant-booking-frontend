@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ Импортируем useNavigate
+import { useNavigate } from "react-router-dom";
 import API from "../api";
-import styles from "../styles/RegisterForm.module.css"; // Подключаем стили
+import styles from "../styles/RegisterForm.module.css";
+import {Button, Flex} from "antd"; // Подключаем стили
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({
@@ -13,7 +14,7 @@ const RegisterForm = () => {
     });
 
     const [error, setError] = useState("");
-    const navigate = useNavigate(); // ✅ Добавляем useNavigate
+    const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -40,7 +41,7 @@ const RegisterForm = () => {
     };
 
     return (
-        <div className={styles.container}>
+        <Flex vertical>
             <form onSubmit={handleSubmit} className={styles.form}>
                 <input type="text" name="name" placeholder="Имя" onChange={handleChange} required />
                 <input type="tel" name="phone" placeholder="Телефон" onChange={handleChange} required />
@@ -48,14 +49,15 @@ const RegisterForm = () => {
                 <input type="password" name="password" placeholder="Пароль" onChange={handleChange} required />
                 <input type="password" name="confirmPassword" placeholder="Повторите пароль" onChange={handleChange} required />
                 {error && <p className={styles.error}>{error}</p>}
-                <button type="submit">Зарегистрироваться</button>
+                <Button type={"primary"}
+                        size={"large"}>Зарегистрироваться</Button>
             </form>
 
 
             <p>Нет аккаунта? <button onClick={() => navigate("/login")} style={{ color: "blue", textDecoration: "underline" }}>Войти в аккаунт</button></p>
 
 
-        </div>
+        </Flex>
     );
 };
 

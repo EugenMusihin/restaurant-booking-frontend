@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
 import LoginForm from "../components/LoginForm.tsx";
+import { Flex, Button, Typography, Input } from "antd";
+
+const { Title, Text } = Typography;
 
 interface User {
     user_id: number;
@@ -9,22 +12,22 @@ interface User {
     user_email: string;
     user_phone: string;
     user_created_date: string;
-    user_role_id: number; // Добавили роль пользователя
+    user_role_id: number;
 }
 
 export default function UserProfile() {
     const [user, setUser] = useState<User | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedUser, setEditedUser] = useState<Partial<User>>({});
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                console.log('123')
                 const response = await API.get("/auth/profile");
-                console.log("Ответ от API:", response.data); // Проверяем, что приходит
                 setUser(response.data);
             } catch {
-                navigate("/login"); // Если не авторизован, отправляем на страницу логина
+                navigate("/login");
             }
         };
 
@@ -33,15 +36,36 @@ export default function UserProfile() {
 
     const handleLogout = async () => {
         try {
-            await API.post("/auth/logout"); // Отправляем запрос на сервер
-        } catch (err) {
-            console.error("Ошибка при выходе:", err);
+            await API.post("/auth/logout");
         } finally {
-            console.log("logout");
-            localStorage.clear(); // Полностью очищаем localStorage
-            sessionStorage.clear(); // Очистка sessionStorage на случай использования
-            navigate("/login", { replace: true }); // Перенаправляем на страницу входа
-            window.location.reload(); // Полностью перезагружаем страницу для очистки состояния
+            localStorage.clear();
+            sessionStorage.clear();
+            navigate("/login", { replace: true });
+            window.location.reload();
+        }
+    };
+
+    const handleEditClick = () => {
+        setIsEditing(true);
+        setEditedUser({
+            user_name: user?.user_name,
+            user_email: user?.user_email,
+            user_phone: user?.user_phone,
+        });
+    };
+
+    const handleCancel = () => {
+        setIsEditing(false);
+        setEditedUser({});
+    };
+
+    const handleSave = async () => {
+        try {
+            await API.put("/user/update", editedUser);
+            setUser((prev) => ({ ...prev, ...editedUser } as User));
+            setIsEditing(false);
+        } catch (err) {
+            console.error("Ошибка при обновлении:", err);
         }
     };
 
@@ -50,34 +74,63 @@ export default function UserProfile() {
     }
 
     return (
+        <Flex vertical>
+            <Title>Личный кабинет</Title>
 
-        <div className="p-6">
-            <h1 className="text-3xl font-bold mb-4">Личный кабинет</h1>
-
-            <div className="flex gap-4 mb-4">
-                <button
-                    onClick={() => navigate("/")}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                >
+            <Flex vertical>
+                <Button onClick={() => navigate("/")} type="primary" size="large">
                     Назад на главную
-                </button>
+                </Button>
 
-                <button
-                    onClick={handleLogout}
-                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                >
+                <Button onClick={handleLogout} type="primary" size="large">
                     Выйти
-                </button>
-            </div>
+                </Button>
+            </Flex>
 
-            <div className="border p-4 rounded-lg shadow-lg">
-                <h2 className="text-2xl font-semibold">{user.user_name}</h2>
-                <p className="text-gray-600">Email: {user.user_email}</p>
-                <p className="text-gray-800">Телефон: {user.user_phone}</p>
-                <p className="text-gray-500 text-sm">
-                    Дата регистрации: {new Date(user.user_created_date).toLocaleDateString()}
-                </p>
-            </div>
-        </div>
+            <Flex vertical>
+                {isEditing ? (
+                    <>
+                        <Text strong>Имя</Text>
+                        <Input
+                            value={editedUser.user_name}
+                            onChange={(e) => setEditedUser({ ...editedUser, user_name: e.target.value })}
+                        />
+
+                        <Text strong>Email</Text>
+                        <Input
+                            value={editedUser.user_email}
+                            onChange={(e) => setEditedUser({ ...editedUser, user_email: e.target.value })}
+                        />
+
+                        <Text strong>Телефон</Text>
+                        <Input
+                            value={editedUser.user_phone}
+                            onChange={(e) => setEditedUser({ ...editedUser, user_phone: e.target.value })}
+                        />
+
+                        <Flex gap="small">
+                            <Button onClick={handleSave} type="primary">
+                                Сохранить изменения
+                            </Button>
+                            <Button onClick={handleCancel} type="default">
+                                Отменить изменения
+                            </Button>
+                        </Flex>
+                    </>
+                ) : (
+                    <>
+                        <Title level={4}>{user.user_name}</Title>
+                        <Title level={5}>Email: {user.user_email}</Title>
+                        <Title level={5}>Телефон: {user.user_phone}</Title>
+                        <Title level={5}>
+                            Дата регистрации: {new Date(user.user_created_date).toLocaleDateString()}
+                        </Title>
+                        <Button onClick={handleEditClick} type="primary">
+                            Изменить данные
+                        </Button>
+                    </>
+                )}
+            </Flex>
+        </Flex>
     );
 }

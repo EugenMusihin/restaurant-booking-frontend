@@ -8,6 +8,7 @@ import Floors from  "./pages/Floors"
 import About from "./pages/About";
 import Home from "./pages/Home";
 import AdminPanel from "./pages/AdminPanel.tsx";
+import UserBookings from "./pages/UserBookings";
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/restaurant/:restaurant_id/floors" element={<Floors />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/adminpanel" element={<AdminPanel />} />
+                <Route path="/user_bookings" element={<UserBookings />} />
 
             </Routes>
         </Router>

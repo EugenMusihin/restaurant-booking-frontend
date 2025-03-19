@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../api";
+import {Button, Flex, Typography} from "antd";
 
+const { Title } = Typography;
 interface Floor {
     floor_id: number;
     floor_name: string;
@@ -23,27 +25,29 @@ export default function Floors() {
     }, [restaurant_id]);
 
     return (
-        <div className="p-6">
-            <h1 className="text-3xl font-bold mb-4">Выберите этаж</h1>
-            <button
+        <Flex vertical>
+            <Title level={2}>Выберите этаж</Title>
+            <Button
                 onClick={() => navigate("/restaurants")}
-                className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
+                type={"primary"}
+                size={"large"}
             >
                 Назад к ресторанам
-            </button>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            </Button>
+            <Flex vertical>
                 {floors.map((floor) => (
                     <div key={floor.floor_id} className="border p-4 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-semibold">Этаж {floor.floor_name}</h2>
-                        <button
+                        <Title level={3}>Этаж {floor.floor_name}</Title>
+                        <Button
                             onClick={() => navigate(`/restaurant/${restaurant_id}/floor/${floor.floor_id}/booking`)}
-                            className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg"
+                            type={"primary"}
+                            size={"large"}
                         >
                             Забронировать
-                        </button>
+                        </Button>
                     </div>
                 ))}
-            </div>
-        </div>
+            </Flex>
+        </Flex>
     );
 }

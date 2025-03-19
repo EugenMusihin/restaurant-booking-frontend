@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
-import styles from "../styles/RegisterForm.module.css";  // Подключаем стили
+import styles from "../styles/RegisterForm.module.css";
+import {Button, Typography} from 'antd';
+
+const { Title, Text} = Typography;
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -32,9 +35,9 @@ const Register = () => {
                 user_name: formData.user_name,
                 user_email: formData.user_email,
                 user_phone: formData.user_phone,
-                user_hash_password: formData.password, // Отправляем в формате FastAPI
-                user_role_id: 1,  // Обычный пользователь
-                user_created_date: new Date().toISOString().split("T")[0]  // Сегодняшняя дата
+                user_hash_password: formData.password,
+                user_role_id: 1,
+                user_created_date: new Date().toISOString().split("T")[0]
             });
 
             alert("Регистрация успешна!");
@@ -50,7 +53,7 @@ const Register = () => {
 
     return (
         <div className={styles.form}>
-            <h2>Регистрация</h2>
+            <Title level={2}>Регистрация</Title>
             {error && <p>{error}</p>}
             <form onSubmit={handleSubmit}>
                 <input type="text" name="user_name" placeholder="Имя" onChange={handleChange} required />
@@ -58,9 +61,17 @@ const Register = () => {
                 <input type="tel" name="user_phone" placeholder="Телефон" onChange={handleChange} required />
                 <input type="password" name="password" placeholder="Пароль" onChange={handleChange} required />
                 <input type="password" name="confirmPassword" placeholder="Повторите пароль" onChange={handleChange} required />
-                <button type="submit">Зарегистрироваться</button>
+                <Button
+                    type={"primary"}
+                    size={"large"}
+                    htmlType={"submit"}
+                >Зарегистрироваться</Button>
             </form>
-            <p>Нет аккаунта? <button onClick={() => navigate("/login")} style={{ color: "blue", textDecoration: "underline" }}>Войти в аккаунт</button></p>
+            <Text>
+                Есть аккаунт?
+            </Text>
+
+            <Button onClick={() => navigate("/login")} >Авторизироваться</Button>
 
         </div>
     );

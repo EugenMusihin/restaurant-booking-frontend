@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api.ts";
+import {Button, Flex} from "antd";
+import { Typography } from 'antd';
+
+
+const { Title } = Typography;
+const { Text } = Typography;
 
 const LoginForm = () => {
     const [formData, setFormData] = useState({ login: "", password: "" });
@@ -21,12 +27,10 @@ const LoginForm = () => {
                 password: formData.password,
             });
 
-            // const { access_token } = response.data;
-            // localStorage.setItem("token", access_token);
 
             console.log("Успешный вход:", response.data);
 
-            navigate("/"); // ✅ После успешного входа переходим на главную
+            navigate("/");
         } catch (err: unknown) {
             if (err instanceof Error) {
                 setError(err.message);
@@ -37,17 +41,24 @@ const LoginForm = () => {
     };
 
     return (
-        <div>
-            <h2>Вход</h2>
+        <Flex vertical>
+            <Title level={2}>Вход</Title>
             <form onSubmit={handleSubmit}>
                 <input type="text" name="login" placeholder="Телефон или Email" onChange={handleChange} required />
                 <input type="password" name="password" placeholder="Пароль" onChange={handleChange} required />
                 {error && <p style={{ color: "red" }}>{error}</p>}
-                <button type="submit">Войти</button>
+                <Button
+                    type={"primary"}
+                    size={"large"}
+                    htmlType={"submit"}
+                >Войти</Button>
             </form>
+            <Text>
+                Нет аккаунта?
+            </Text>
 
-            <p>Нет аккаунта? <button onClick={() => navigate("/register")} style={{ color: "blue", textDecoration: "underline" }}>Зарегистрироваться</button></p>
-        </div>
+            <Button onClick={() => navigate("/register")} >Зарегистрироваться</Button>
+        </Flex>
     );
 };
 
