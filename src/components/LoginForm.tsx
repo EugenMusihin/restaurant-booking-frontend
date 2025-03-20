@@ -11,7 +11,7 @@ const { Text } = Typography;
 const LoginForm = () => {
     const [formData, setFormData] = useState({ login: "", password: "" });
     const [error, setError] = useState("");
-    const navigate = useNavigate(); // ✅ Добавляем useNavigate
+    const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
